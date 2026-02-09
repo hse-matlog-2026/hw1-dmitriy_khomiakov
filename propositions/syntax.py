@@ -291,6 +291,34 @@ class Formula:
         Returns:
             A formula whose polish notation representation is the given string.
         """
+        def parse_rec(s):
+            if not s:
+                return None, ""
+
+            if 'p' <= s[0] <= 'z':
+                i = 1
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                return Formula(s[:i]), s[i:]
+
+            if s[0] in {'T', 'F'}:
+                return Formula(s[0]), s[1:]
+
+            if s[0] == '~':
+                sub, rest = parse_rec(s[1:])
+                return Formula('~', sub), rest
+
+            for op in ['->', '&', '|']:
+                if s.startswith(op):
+                    left, rest = parse_rec(s[len(op):])
+                    right, rest2 = parse_rec(rest)
+                    return Formula(op, left, right), rest2
+
+            return None, ""
+
+        formula, rest = parse_rec(string)
+        assert formula is not None and rest == ''
+        return formula
         # Optional Task 1.8
 
     def substitute_variables(self, substitution_map: Mapping[str, Formula]) -> \
