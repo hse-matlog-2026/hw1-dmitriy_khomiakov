@@ -176,11 +176,11 @@ class Formula:
             oper_set.add(self.root)
         elif is_unary(self.root):
             oper_set.add(self.root)
-            var_set |= self.first.variables()
+            oper_set |= self.first.operators()
         elif is_binary(self.root):
             oper_set.add(self.root)
-            var_set |= self.first.variables()
-            var_set |= self.second.variables()
+            oper_set |= self.first.operators()
+            oper_set |= self.second.operators()
         else:
             return oper_set
         # Task 1.3
