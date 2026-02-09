@@ -104,17 +104,17 @@ class Formula:
 
     @memoized_parameterless_method
     def __repr__(self) -> str:
+        """Computes the string representation of the current formula.
+
+        Returns:
+            The standard string representation of the current formula.
+        """
         if is_variable(self.root) or is_constant(self.root):
             return self.root
         elif is_unary(self.root):
             return self.root + repr(self.first)
         else:
             return f'({repr(self.first)}{self.root}{repr(self.second)})'
-        """Computes the string representation of the current formula.
-
-        Returns:
-            The standard string representation of the current formula.
-        """
         # Task 1.1
 
     def __eq__(self, other: object) -> bool:
@@ -151,6 +151,16 @@ class Formula:
         Returns:
             A set of all variable names used in the current formula.
         """
+        var_set = set()
+        if is_variable(self.root):
+            var_set.add(self.root)
+        elif is_unary(self.root):
+            var_set |= self.first.variables()
+        elif is_binary(self.root):
+            var_set |= self.first.variables()
+            var_set |= self.second.variables()
+        else:
+            return var_set
         # Task 1.2
 
     @memoized_parameterless_method
@@ -161,6 +171,18 @@ class Formula:
             A set of all operators (including ``'T'`` and ``'F'``) used in the
             current formula.
         """
+        oper_set = set()
+        if is_constant(self.root):
+            oper_set.add(self.root)
+        elif is_unary(self.root):
+            oper_set.add(self.root)
+            var_set |= self.first.variables()
+        elif is_binary(self.root):
+            oper_set.add(self.root)
+            var_set |= self.first.variables()
+            var_set |= self.second.variables()
+        else:
+            return oper_set
         # Task 1.3
         
     @staticmethod
