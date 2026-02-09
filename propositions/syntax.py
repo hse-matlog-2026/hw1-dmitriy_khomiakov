@@ -159,8 +159,7 @@ class Formula:
         elif is_binary(self.root):
             var_set |= self.first.variables()
             var_set |= self.second.variables()
-        else:
-            return var_set
+        return var_set
         # Task 1.2
 
     @memoized_parameterless_method
@@ -181,8 +180,7 @@ class Formula:
             oper_set.add(self.root)
             oper_set |= self.first.operators()
             oper_set |= self.second.operators()
-        else:
-            return oper_set
+        return oper_set
         # Task 1.3
         
     @staticmethod
