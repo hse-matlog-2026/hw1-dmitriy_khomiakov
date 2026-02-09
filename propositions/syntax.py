@@ -200,6 +200,9 @@ class Formula:
             should be of ``None`` and an error message, where the error message
             is a string with some human-readable content.
         """
+        if string == '':
+            return None, 'Empty string'
+
         i = 0
         if 'p' <= string[0] <= 'z':
             i = 1
@@ -247,7 +250,7 @@ class Formula:
             representation of a formula, ``False`` otherwise.
         """
         parsed, rest = Formula._parse_prefix(string)
-        return parsed is not None and rest == ""
+        return parsed is not None and rest == ''
         # Task 1.5
         
     @staticmethod
