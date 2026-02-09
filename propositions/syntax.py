@@ -274,6 +274,11 @@ class Formula:
         Returns:
             The polish notation representation of the current formula.
         """
+        if is_constant(self.root) or is_variable(self.root):
+            return self.root
+        if is_unary(self.root):
+            return self.root + self.first.polish()
+        return self.root + self.first.polish() + self.second.polish()
         # Optional Task 1.7
 
     @staticmethod
