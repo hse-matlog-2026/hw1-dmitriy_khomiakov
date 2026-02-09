@@ -104,6 +104,12 @@ class Formula:
 
     @memoized_parameterless_method
     def __repr__(self) -> str:
+        if is_variable(self.root) or is_constant(self.root):
+            return self.root
+        elif is_unary(self.root):
+            return self.root + repr(self.first)
+        else:
+            return repr(self.first) + self.root + repr(self.second)
         """Computes the string representation of the current formula.
 
         Returns:
