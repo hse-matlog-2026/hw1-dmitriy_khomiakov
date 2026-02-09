@@ -200,6 +200,39 @@ class Formula:
             should be of ``None`` and an error message, where the error message
             is a string with some human-readable content.
         """
+        i = 0
+        if 'p' <= string[0] <= 'z':
+            i = 1
+            while i < len(string) and string[i].isdigit():
+                i += 1
+            name = string[:i]
+            if is_variable(name):
+                return (Formula(name), string[i:])
+
+        if string[0] in {'T', 'F'}:
+            return (Formula(string[0]), string[1:])
+
+        if string[0] == '~':
+            sub, rest = Formula._parse_prefix(string[1:])
+            if sub is None:
+                return (None, rest)
+            return (Formula('~', sub), rest)
+
+        if string[0] == '(':
+            left, rest = Formula._parse_prefix(string[1:])
+            if left is None:
+                return (None, rest)
+
+            for oper in ['&', '|', '->']:
+                if rest.startswith(oper):
+                    right, rest2 = Formula._parse_prefix(rest[len(oper):])
+                    if right is None:
+                        return (None, rest2)
+                    if rest2.startswith(')'):
+                        return (Formula(oper, left, right), rest2[1:])
+                    return (None, "Invalid formula")
+            return (None, "Invalid operator")
+        return (None, "Invalid formula")
         # Task 1.4
 
     @staticmethod
@@ -213,6 +246,8 @@ class Formula:
             ``True`` if the given string is a valid standard string
             representation of a formula, ``False`` otherwise.
         """
+        parsed, rest = Formula._parse_prefix(string)
+        return parsed is not None and rest == ""
         # Task 1.5
         
     @staticmethod
@@ -226,6 +261,8 @@ class Formula:
             A formula whose standard string representation is the given string.
         """
         assert Formula.is_formula(string)
+        formula, rest = Formula._parse_prefix(string)
+        return formula
         # Task 1.6
 
     def polish(self) -> str:
